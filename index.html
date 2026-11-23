@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <title>Nova Patrol</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="back" href="https://mike.pullen.dev/">← mike.pullen.dev</a>
+      <div class="buttons">
+        <button type="button" id="mute-btn" aria-label="Mute sound">🔊</button>
+        <button type="button" id="pause-btn" aria-label="Pause">⏸</button>
+      </div>
+    </div>
+    <main class="stage">
+      <canvas id="game" width="480" height="720">
+        Nova Patrol is a space shooter game. It needs a browser with canvas
+        support.
+      </canvas>
+      <div id="overlay" class="overlay">
+        <h1 id="overlay-title">Nova Patrol</h1>
+        <div id="overlay-body" class="overlay-body">
+          <p>
+            Alien ships are coming in waves. Blast them, dodge their fire, and
+            beat the boss every 5th wave. Your ship fires on its own.
+          </p>
+          <ul class="help">
+            <li><b>Move:</b> arrow keys or WASD, or drag on the screen</li>
+            <li><b>Bomb:</b> B or X key, or the 💣 button</li>
+            <li><b>Pause:</b> P or Esc</li>
+          </ul>
+          <ul class="legend">
+            <li><span class="pu pu-p">P</span> More guns</li>
+            <li><span class="pu pu-r">R</span> Rapid fire</li>
+            <li><span class="pu pu-s">S</span> Shield</li>
+            <li><span class="pu pu-b">B</span> Extra bomb</li>
+            <li><span class="pu pu-l">♥</span> Extra life</li>
+          </ul>
+          <p class="tip">Chain kills quickly for a score multiplier!</p>
+        </div>
+        <p id="overlay-best" class="best"></p>
+        <button type="button" id="start-btn" class="start">Start</button>
+      </div>
+      <button type="button" id="bomb-btn" class="bomb" aria-label="Drop bomb">
+        💣
+      </button>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>

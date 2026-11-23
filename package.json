@@ -1,0 +1,17 @@
+{
+  "name": "nova-patrol",
+  "version": "1.0.0",
+  "description": "A wave-based space shooter: blast alien waves, grab power-ups and beat a boss every fifth wave.",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:html": "html-validate index.html",
+    "lint": "npm run format:check && npm run lint:html"
+  },
+  "devDependencies": {
+    "html-validate": "11.16.4",
+    "prettier": "3.9.10"
+  }
+}
