@@ -736,6 +736,7 @@
   }
 
   function startGame() {
+    guardHistory();
     resetGame();
     state = "playing";
     overlay.hidden = true;
@@ -1321,4 +1322,64 @@
   setOverlay(overlayTitle.textContent, null, "Start");
   resize();
   requestAnimationFrame(frame);
+
+  // ---------- touch-screen kid-proofing ----------
+  // Little hands tap fast and start swipes at the very edge of the screen. On
+  // an iPhone that zooms the page, or swipes back through history mid-game.
+  // style.css also sets `touch-action: manipulation` to stop double-tap zoom.
+  let lastTouchEnd = 0;
+  document.addEventListener(
+    "touchend",
+    (ev) => {
+      // A second tap within 350 ms is a double tap: don't let it zoom. Links
+      // and buttons are left alone so they still click.
+      const onControl = ev.target.closest?.("a, button");
+      if (ev.timeStamp - lastTouchEnd < 350 && !onControl) ev.preventDefault();
+      lastTouchEnd = ev.timeStamp;
+    },
+    { passive: false },
+  );
+  // Safari's pinch zoom.
+  document.addEventListener("gesturestart", (ev) => ev.preventDefault());
+  document.addEventListener(
+    "touchstart",
+    (ev) => {
+      // Safari's back/forward swipe starts with a touch at the very edge.
+      const x = ev.touches[0]?.clientX ?? window.innerWidth / 2;
+      const atEdge = x < 24 || x > window.innerWidth - 24;
+      if (atEdge && !ev.target.closest?.("a, button")) ev.preventDefault();
+    },
+    { passive: false },
+  );
+
+  // Once a game starts, a back swipe that still gets through lands back on the
+  // game instead of leaving it. The ← link still leaves.
+  let guardingHistory = false;
+  function guardHistory() {
+    if (guardingHistory) return;
+    guardingHistory = true;
+    try {
+      history.pushState({ inGame: true }, "");
+      window.addEventListener("popstate", () =>
+        history.pushState({ inGame: true }, ""),
+      );
+    } catch {
+      // history unavailable
+    }
+  }
+
+  // iPhones only let sound start from a finished tap (touchend or click), not
+  // from pointerdown, so wake the audio on every finished tap and key press.
+  function wakeAudio() {
+    if (muted) return;
+    try {
+      audio ??= new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state !== "running") audio.resume();
+    } catch {
+      // no audio
+    }
+  }
+  for (const type of ["touchend", "click", "keydown"]) {
+    document.addEventListener(type, wakeAudio, true);
+  }
 })();
